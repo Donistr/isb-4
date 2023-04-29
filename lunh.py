@@ -1,4 +1,9 @@
-def luhn_algorithm(card_number: str):
+def luhn_algorithm(card_number: str) -> bool:
+    """
+    function uses the Luhn algorithm to validate a credit card number
+    :param card_number: card number to validate
+    :return: True - if the card number is valid, False - otherwise
+    """
     digits = list(map(int, str(card_number)))[::-1]
     for i in range(1, len(digits), 2):
         digits[i] *= 2
