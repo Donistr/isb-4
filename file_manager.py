@@ -1,5 +1,6 @@
 import json
 import logging
+import csv
 
 logger = logging.getLogger()
 logger.setLevel('INFO')
@@ -100,13 +101,14 @@ class FileManager:
         :return: statistic
         """
         try:
-            with open(self.__statistic_file_path, mode='r') as text_file:
-                lines = text_file.readlines()
+            with open(self.__statistic_file_path, mode='r', newline='') as csv_file:
+                reader = csv.reader(csv_file)
+                lines = list(reader)
         except OSError as err:
             logging.warning(f'{err} - error reading statistic from file {self.__statistic_file_path}')
         statistic = dict()
         for line in lines:
-            cores, time = line.split(' | ')
+            cores, time = line
             statistic[int(cores)] = float(time)
         logging.info(f'Statistic were read from the file {self.__statistic_file_path}')
         return statistic
@@ -119,8 +121,9 @@ class FileManager:
         :return: None
         """
         try:
-            with open(self.__statistic_file_path, mode='a') as text_file:
-                text_file.write(f'{cores} | {time}\n')
+            with open(self.__statistic_file_path, mode='a', newline='') as csv_file:
+                writer = csv.writer(csv_file)
+                writer.writerow([cores, time])
             logging.info(f'Statistic written to file {self.__statistic_file_path}')
         except OSError as err:
             logging.warning(f'{err} - error writing statistic to file {self.__statistic_file_path}')
